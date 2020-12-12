@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <div class="top">
-      <p>本周流行</p>
-    </div>
+  <div class="feature">
+    <a href="https://act.mogujie.com/zzlx67">
+      <img src="../../../assets/img/home/recommend_bg.jpg">
+    </a>
   </div>
 </template>
 
@@ -13,8 +13,7 @@
 </script>
 
 <style scoped>
-.top {
-  text-align: center;
-  margin-top: 10px;
+.feature img{
+  width: 100%;
 }
 </style>

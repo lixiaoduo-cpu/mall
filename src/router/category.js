@@ -1,7 +1,7 @@
-import {request} from '../store/request';
-
-export function get() {
-  return request({
-    url: '/home/multidata'
-  })
-}
+// import {request} from '../store/request';
+//
+// export function get() {
+//   return request({
+//     url: '/home/multidata'
+//   })
+// }
