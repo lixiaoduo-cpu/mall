@@ -1,8 +1,10 @@
 <template>
-  <div class="goods-item">
-    <a :href="goodsItem.link">
-      <img :src="goodsItem.show.img" alt="" class="img">
-    </a>
+  <div class="goods-item"
+       @click="itemClick">
+      <img :src="goodsItem.show.img"
+           alt=""
+           class="img"
+           @load="imgLoad">
     <div class="goods-info">
       <p>{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -20,6 +22,16 @@
         default() {
           return [];
         }
+      }
+    },
+    methods: {
+      //发射了一个事件，用于监听图片是否被加载完毕
+      //因为没有$bus，所以要在main.js中创建它
+      imgLoad() {
+        this.$bus.$emit('itemImageLoad');
+      },
+      itemClick() {
+        this.$router.push('/detail/' + this.goodsItem.iid)
       }
     }
   };

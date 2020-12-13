@@ -1,5 +1,6 @@
 <template>
-  <div id="home">
+  <div id="home"
+       ref="home-control">
     <router-view></router-view>
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
@@ -10,7 +11,8 @@
             :probe-type="3"
             @scroll="contentscroll"
             :pull-up-load="true"
-            @pullingUp="pullingUp">
+            @pullingUp="loadMore"
+            >
       <home-swiper :banners="banners"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature></feature>
@@ -38,7 +40,6 @@
   import GoodsList from '../../components/content/goods/goodsList/GoodsList';
   import Scroll from '../../components/common/scroll/Scroll';
   import BackTop from '../../components/content/backtop/BackTop';
-
   export default {
     name: 'Home',
     components: {
@@ -62,9 +63,22 @@
           'sell': {page:0, list: []}
         },
         currentType: 'pop',
-        isShowBackTop: false
+        isShowBackTop: false,
+        saveY: 0
       };
 
+    },
+    //活跃时执行
+    activated() {
+      //滚动到所保存的位置
+      this.$refs.scroll.scrollTo(0,this.saveY,0);
+      this.$refs.scroll.refresh();
+    },
+
+    //un活跃时执行
+    deactivated() {
+      this.saveY = this.$refs.scroll.getY();
+      console.log(this.saveY);
     },
     created() {
       //1.请求多个数据
@@ -72,9 +86,17 @@
         this.banners = res.data.data.banner.list;
         this.recommends = res.data.data.recommend.list;
       });
-      this.getHomeGoods1('pop');
-      this.getHomeGoods1('new');
-      this.getHomeGoods1('sell');
+      //2.请求商品数据
+      this.getHomeGoods('pop');
+      this.getHomeGoods('new');
+      this.getHomeGoods('sell');
+
+      //3.监听Item中图片加载完成,因为没有$bus，所以要在main.js中创建它
+      this.$bus.$on('itemImageLoad', () => {
+        // console.log('------');
+        this.$refs.scroll.refresh();
+      });
+
     },
     methods: {
       //事件监听的方法
@@ -94,22 +116,22 @@
         //回到顶部的方法(在Scroll.vue中做了一个简单的封装，这里只是调用了一下方法)
         this.$refs.scroll.scrollTo(0,0,500);
       },
-      //是否显示回顶部
+      //是否显示回顶部按钮
       contentscroll(position) {
         this.isShowBackTop = (-position.y) > 1000;
       },
-      pullingUp() {
-        console.log('上拉加载更多');
-        this.getHomeGoods1(this.currentType)
-        this.$refs.scroll.finishPullUp()
+      loadMore() {
+        this.getHomeGoods(this.currentType);
       },
 
+
       //网络请求相关方法
-      getHomeGoods1(type) {
+      getHomeGoods(type) {
         const page = this.goods[type].page + 1;
         getHomeGoods(type, page).then(res => {
           this.goods[type].list.push(...res.data.data.list);
           this.goods[type].page += 1;
+          this.$refs.scroll.scroll.finishPullUp();
         });
       }
 

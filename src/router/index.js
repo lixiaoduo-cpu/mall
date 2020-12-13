@@ -4,6 +4,7 @@ import Home from '../views/home/Home';
 import Category from '../views/category/Category';
 import Profile from '../views/profile/Profile';
 import Shopcart from '../views/shopcart/Shopcart';
+import Detail from '../views/detail/Detail';
 
 //1.安装插件
 Vue.use(VueRouter)
@@ -29,6 +30,10 @@ const routes = [
   {
     path: '/shopcart',
     component: Shopcart
+  },
+  {
+    path: '/detail/:id',
+    component: Detail
   },
 ]
 const router = new VueRouter({

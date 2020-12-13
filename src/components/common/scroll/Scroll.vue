@@ -15,8 +15,7 @@
     },
     data() {
       return {
-        scroll: null,
-        message: '111'
+        scroll: null
       };
     },
     props: {
@@ -42,18 +41,32 @@
       this.scroll.on('scroll',(position) => {
         this.$emit('scroll',position);
       });
+      //3.上拉加载更多
+      // this.scroll.on('pullingUp', () => {
+      //   this.$emit('pullingUp')
+      // })
+      //3.监听scroll滚动到底部
+      if (this.pullUpLoad){
+        this.scroll.on('pullingUp', () => {
+          this.$emit('pullingUp');
+        });
+      }
 
-      //3. 监听上拉加载更多
-      this.scroll.on('pullingUp', () => {
-        this.$emit('pullingUp');
-      });
+
     },
     methods: {
       scrollTo(x,y,time) {
         this.scroll.scrollTo(x,y,time);
       },
       finishPullUp() {
-        this.scroll.finishPullUp()
+        this.scroll.finishPullUp();
+      },
+      refresh() {
+        this.scroll.refresh();
+      },
+      getY() {
+        return this.scroll.y
+
       }
 
     }
